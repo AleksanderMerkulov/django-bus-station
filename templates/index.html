@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Автовокзал</title>
+    <link href="{% static 'bootstrap5/css/bootstrap.css' %}" rel="stylesheet">
+    {# <script src="{% static 'bootstrap5/js/bootstrap.js' %}"></script> Конфликтует, bootstrap.bundle.js достаточно #}
+    <script src="{% static 'bootstrap5/js/bootstrap.bundle.js' %}"></script>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <a href="/">Автовокзал</a>
+            </div>
+            <nav class="col-sm-8">
+                <a href="/tickets/">Билеты</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<div class="container">
+    {% block content %}
+
+    {% endblock %}
+</div>
+</body>
+</html>
