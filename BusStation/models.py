@@ -47,6 +47,7 @@ class StationOfDeparture(models.Model):
 
     class Meta:
         verbose_name = "Станции отправления маршрута"
+        verbose_name_plural = "Станции отправления маршрутов"
     pass
 
 
@@ -56,6 +57,7 @@ class StationOfArrived(models.Model):
 
     class Meta:
         verbose_name = "Станции прибытия маршрута"
+        verbose_name_plural = "Станции прибытия маршрутов"
     pass
 
 
@@ -65,6 +67,7 @@ class RoutStations(models.Model):
 
     class Meta:
         verbose_name = "Промежуточные станции маршрута"
+        verbose_name_plural = "Промежуточные станции маршрутов"
 
 
 class Ticket(models.Model):
@@ -79,6 +82,6 @@ class Ticket(models.Model):
         return self.id + self.passenger.person.username
 
     class Meta:
-        verbose_name = "Станции прибытия маршрута"
-
+        verbose_name = "Билет"
+        verbose_name_plural = "Билеты"
     pass
