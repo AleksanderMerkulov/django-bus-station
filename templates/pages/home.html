@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {% for route in routes %}
+        <div style="border: 1px solid gray">
+            {{ route.number }}
+            <p>
+                {% for station in route.stations.all %}
+                    {{ station }},
+                {% endfor %}
+{#                {{ stations }}#}
+            </p>
+        </div>
+    {% endfor %}
+
+{% endblock %}

@@ -11,6 +11,7 @@ class Station(models.Model):
     class Meta:
         verbose_name = "Станция"
         verbose_name_plural = "Станции"
+
     pass
 
 
@@ -25,6 +26,7 @@ class BusRoute(models.Model):
     class Meta:
         verbose_name = "Автобусный маршрут"
         verbose_name_plural = "Автобусные маршруты"
+
     pass
 
 
@@ -38,6 +40,7 @@ class Passenger(models.Model):
     class Meta:
         verbose_name = "Пассажир"
         verbose_name_plural = "Пассажиры"
+
     pass
 
 
@@ -45,9 +48,13 @@ class StationOfDeparture(models.Model):
     station = models.ForeignKey(Station, on_delete=models.PROTECT)
     bus_rout = models.ManyToManyField(BusRoute)
 
+    def __str__(self):
+        return self.station.name
+
     class Meta:
         verbose_name = "Станции отправления маршрута"
         verbose_name_plural = "Станции отправления маршрутов"
+
     pass
 
 
@@ -55,15 +62,22 @@ class StationOfArrived(models.Model):
     station = models.ForeignKey(Station, on_delete=models.PROTECT)
     bus_rout = models.ManyToManyField(BusRoute)
 
+    def __str__(self):
+        return self.station.name
+
     class Meta:
         verbose_name = "Станции прибытия маршрута"
         verbose_name_plural = "Станции прибытия маршрутов"
+
     pass
 
 
 class RoutStations(models.Model):
     bus_rout = models.ForeignKey(BusRoute, on_delete=models.PROTECT)
     stations = models.ManyToManyField(Station)
+
+    def __str__(self):
+        return self.bus_rout.number
 
     class Meta:
         verbose_name = "Промежуточные станции маршрута"
@@ -79,9 +93,12 @@ class Ticket(models.Model):
     seat = models.IntegerField(verbose_name="Посадочное место")
 
     def __str__(self):
-        return self.id + self.passenger.person.username
+        return str(self.id) + " " + str(self.passenger.person.username) \
+               + str(self.station_of_departure) + "->" \
+               + str(self.station_of_arrived) + str(self.date_of_departure)
 
     class Meta:
         verbose_name = "Билет"
         verbose_name_plural = "Билеты"
+
     pass
