@@ -1,4 +1,20 @@
 {% extends "index.html" %}
 {% block content %}
-    {{ form.as_p }}
+    <p>Если у пассажира нет личного кабинета, то заполняются поля НР_Пасссажир_ФИО и НР_Пассажир_паспорт. В случае
+        наличия кабинета пассажир выбирается из списка пассажиров</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Купить билет</button>
+    </form>
+
+    {#    https://air-datepicker.com/ru/docs#}
+    <script src="/static/air-datepicker/air-datepicker.js"></script>
+    <link rel="stylesheet" href="/static/air-datepicker/air-datepicker.css">
+    <script>
+        const datepicker = new AirDatepicker('#id_date_of_departure', {
+            dateFormat: 'yyyy-MM-dd'
+        })
+    </script>
 {% endblock %}
+
