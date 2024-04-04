@@ -7,7 +7,7 @@ class changeInfoForm(forms.ModelForm):
     class Meta:
         model = Passenger
         fields = '__all__'
-        # exclude = ['person']
+        exclude = ['person']
 
 
 class currTicketForm(forms.ModelForm):
