@@ -33,8 +33,9 @@ class BusRoute(models.Model):
 
 
 class Passenger(models.Model):
+    passengerFIO = models.CharField(max_length=100, verbose_name="ФИО", default='')
     passport = models.CharField(max_length=11, verbose_name="Данные паспорта")
-    person = models.ForeignKey(User, on_delete=models.PROTECT)
+    person = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.person.username
@@ -90,7 +91,7 @@ class RaspisanieReisov(models.Model):
     date = models.DateTimeField(verbose_name='Дата и время отправления рейса')
 
     def __str__(self):
-        return str(self.bus_route.number)+" "+str(self.date)
+        return "Рейс №" + str(self.bus_route.number)+". Отправление: "+str(self.date)
 
     class Meta:
         verbose_name = "Расписание"
@@ -101,25 +102,26 @@ class RaspisanieReisov(models.Model):
 class TicketNoLogin(models.Model):
     passengerFIO = models.CharField(max_length=100, null=True, blank=True)
     passengerFIO_passport = models.CharField(max_length=11, null=True, blank=True)
-    date_of_departure = models.DateTimeField(verbose_name="Дата отправления")
+    route = models.ForeignKey(RaspisanieReisov, on_delete=models.PROTECT, default=None)
     date_of_sell = models.DateTimeField(verbose_name="Дата покупки")
-    station_of_departure = models.ForeignKey(StationOfDeparture, on_delete=models.PROTECT, default=None)
-    station_of_arrived = models.ForeignKey(StationOfArrived, on_delete=models.PROTECT, default=None)
     seat = models.IntegerField(verbose_name="Посадочное место")
+    seller = models.ForeignKey(User, on_delete=models.PROTECT, default=None)
+
+    class Meta:
+        verbose_name = 'Билет без регистрации'
+        verbose_name_plural = 'Билеты без регистрации'
 
 
 class Ticket(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.PROTECT, default=None)
-    date_of_departure = models.DateTimeField(verbose_name="Дата отправления")
+    route = models.ForeignKey(RaspisanieReisov, on_delete=models.PROTECT, default=None)
     date_of_sell = models.DateTimeField(verbose_name="Дата покупки")
-    station_of_departure = models.ForeignKey(StationOfDeparture, on_delete=models.PROTECT, default=None)
-    station_of_arrived = models.ForeignKey(StationOfArrived, on_delete=models.PROTECT, default=None)
     seat = models.IntegerField(verbose_name="Посадочное место")
 
     def __str__(self):
         return str(self.id) + " " + str(self.passenger.person.username) \
-               + " " + str(self.station_of_departure) + "->" \
-               + str(self.station_of_arrived) + " " + str(self.date_of_departure)
+               + " " + str(self.route.bus_route.number) + "->" \
+               + str(self.date_of_sell)
 
     class Meta:
         verbose_name = "Билет"

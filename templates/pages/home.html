@@ -3,13 +3,19 @@
 {% block content %}
     {% for route in routes %}
         <div style="border: 1px solid gray">
-            {{ route.number }}
+            <h4>Рейс №{{ route.number }}</h4>
             <p>
                 {% for station in route.stations.all %}
                     {{ station }},
                 {% endfor %}
 {#                {{ stations }}#}
             </p>
+            {% if user.is_authenticated %}
+                <a href="/info/buy/{{ route.number }}">Купить билет</a>
+
+{#            {% else %}#}
+{#                <a href="/info/buy/{{ route.number }}/no_login">Купить билет</a>#}
+            {% endif %}
         </div>
     {% endfor %}
 
