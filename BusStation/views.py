@@ -1,11 +1,24 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.models import LogEntry
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import Table
 
 from .forms import currTicketForm, currTicketNoLoginForm, changeInfoForm
 from .models import *
+
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 # Create your views here.
@@ -22,12 +35,13 @@ def Profile(request):
 
     return render(request, 'pages/profile.html')
 
+
 def create_profile(request):
     if request.method == "POST":
         pass
 
-def change_profile(request):
 
+def change_profile(request):
     p = Passenger.objects.filter(person_id=request.user.id)
 
     if not p:
@@ -50,6 +64,7 @@ def change_profile(request):
         if request.method == "POST":
             form = changeInfoForm(request.POST, instance=person)
             return redirect('/info/')
+
 
 class TicketCreate(CreateView):
     model = Ticket
@@ -97,3 +112,57 @@ def buyCurrTicketNoLogin(request, pk):
             n_form.save()
             return redirect('/')
     pass
+
+
+def showLog(request):
+    if request.user.is_superuser:
+        logs = LogEntry.objects.all()
+        return render(request, "pages/logs.html", {'logs': logs})
+    else:
+        return render(request, 'pages/not_allowed.html')
+
+def ticket_pdf(request):
+    pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
+    ticket = Ticket.objects.all()
+    ticket_no_login = TicketNoLogin.objects.all()
+
+    # Настройка PDF
+    pdf_filename = "output.pdf"
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    # Определение стилей
+    styles = getSampleStyleSheet()
+    styleH = styles["Heading1"]
+
+    # Форматирование данных в виде списка списков для таблицы
+    table_data = [['Number', 'Passenger', 'Date of sell']]  # заголовки таблицы
+    for entry in ticket:
+        table_data.append([entry.id, entry.passenger, entry.date_of_sell])  # добавление данных из модели
+    for entry in ticket_no_login:
+        table_data.append([entry.id, entry.passengerFIO, entry.date_of_sell])  # добавление данных из модели
+
+    # Создание таблицы с данными
+    table = Table(table_data, repeatRows=1)
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('FONTNAME', (0, 0), (-1, -1), 'Arial'),
+                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                               ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                               ]))
+
+    # Добавление таблицы в элементы PDF
+    elements.append(table)
+
+    # Генерация PDF
+    doc.build(elements)
+
+    # Сброс указателя потока обратно в начало
+    buffer.seek(0)
+
+    # Создание FileResponse
+    response = FileResponse(buffer, as_attachment=True, filename='output.pdf')
+
+    return response

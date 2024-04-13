@@ -22,6 +22,8 @@
                 <li><a href="/" class="nav-link px-2 link-secondary">Главная</a></li>
                 {% if user.is_superuser %}
                     <li><a href="/admin/" class="nav-link px-2 link-dark">Админ</a></li>
+                    <li><a href="/info/ticket_pdf" class="nav-link px-2 link-dark">Отчёт по билетам</a></li>
+                    <li><a href="/info/logs" class="nav-link px-2 link-dark">Действия пользователей</a></li>
                 {% endif %}
                 <li><a href="/info/" class="nav-link px-2 link-dark">Личный кабинет</a></li>
             </ul>
