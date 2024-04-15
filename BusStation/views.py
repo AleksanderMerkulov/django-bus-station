@@ -32,8 +32,10 @@ def Profile(request):
     profile = Passenger.objects.filter(person_id=userID)
     if not profile:
         return redirect('/info/change_info')
-
-    return render(request, 'pages/profile.html')
+    tickets = Ticket.objects.filter(passenger_id=userID)
+    return render(request, 'pages/profile.html', {
+        'tickets': tickets
+    })
 
 
 def create_profile(request):

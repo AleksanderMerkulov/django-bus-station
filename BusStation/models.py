@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 SEATS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+SIZE_PLACE = ['мало', 'стандартно', 'комфорт', 'комфорт+']
 
 
 class Station(models.Model):
@@ -20,7 +21,17 @@ class Station(models.Model):
 # автобусный рейс - Ries
 class BusRoute(models.Model):
     number = models.IntegerField(verbose_name="Номер рейса")
-    stations = models.ManyToManyField(Station)
+    depart_station = models.ForeignKey(Station, verbose_name='Станция отправления', on_delete=models.PROTECT,
+                                       related_name='depart_station2station',
+                                       default=None, null=True)
+    arr_station = models.ForeignKey(Station, verbose_name='Станция прибытия', on_delete=models.PROTECT,
+                                    related_name='arrived_station2station',
+                                    default=None, null=True)
+    stations = models.ManyToManyField(Station, verbose_name='Промежуточные станции')
+    aircool = models.BooleanField(verbose_name='Кондиционер', default=True)
+    size_place = models.CharField(verbose_name='Размер пространства для ног', max_length=100, default='стандартно')
+    toilet = models.BooleanField(verbose_name="Наличие туалета", default=False)
+    desc = models.TextField(verbose_name='Описание маршрута', null=True, blank=True)
 
     def __str__(self):
         return str(self.number)

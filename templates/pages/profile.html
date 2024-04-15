@@ -1,5 +1,8 @@
 {% extends 'index.html' %}
 
 {% block content %}
+    {% for ticket in tickets %}
+        <li>{{ ticket.route }} | Место:{{ ticket.seat }} | {{ ticket.date_of_sell }}</li>
+    {% endfor %}
 
 {% endblock %}
