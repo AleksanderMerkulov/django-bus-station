@@ -1,0 +1,7 @@
+.route-item{
+    padding: 10px;
+    /*border: 1px solid rgba(0, 0, 0, 0.3);*/
+    border-radius: 6px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+}

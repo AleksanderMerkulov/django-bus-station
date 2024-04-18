@@ -29,12 +29,13 @@ def Info(request):
 @login_required
 def Profile(request):
     userID = request.user.id
-    profile = Passenger.objects.filter(person_id=userID)
+    profile = Passenger.objects.get(person_id=userID)
     if not profile:
         return redirect('/info/change_info')
     tickets = Ticket.objects.filter(passenger_id=userID)
     return render(request, 'pages/profile.html', {
-        'tickets': tickets
+        'tickets': tickets,
+        'profile': profile
     })
 
 
@@ -54,6 +55,9 @@ def change_profile(request):
         if request.method == "POST":
             form = changeInfoForm(request.POST)
             n_form = form.save(commit=False)
+            exists = Passenger.objects.filter(passport=n_form.passport).exists()
+            if exists:
+                return render(request, 'forms/form.html', {'form': form, 'err': 'Такие паспортные данные существуют'})
             n_form.person_id = request.user.id
             n_form.save()
             return redirect('/info/')
@@ -80,6 +84,7 @@ def getBusRoute(pk):
 
 @login_required
 def buyCurrTicket(request, pk):
+    passanger = None
     try:
         passanger = Passenger.objects.get(person_id=request.user.id)
     except ValueError:
@@ -95,7 +100,15 @@ def buyCurrTicket(request, pk):
         n_form = form.save(commit=False)
         n_form.date_of_sell = datetime.now()
         n_form.passenger_id = request.user.id
+        busRoute = BusRoute.objects.get(number=pk)
+        rest_of_money = passanger.balance - busRoute.cost
+        if rest_of_money < 0:
+            form.fields['route'].choices = RaspisanieReisov.objects.filter(bus_route__number=pk).values_list(
+                'bus_route__number', 'date')
+            return render(request, 'forms/form.html', {'form': form, 'err': 'Недостаточно денег!'})
+        passanger.balance = rest_of_money
         n_form.save()
+        passanger.save()
         return redirect('/')
     pass
 
@@ -153,6 +166,50 @@ def ticket_pdf(request):
                                ('FONTNAME', (0, 0), (-1, -1), 'Arial'),
                                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                               ]))
+
+    # Добавление таблицы в элементы PDF
+    elements.append(table)
+
+    # Генерация PDF
+    doc.build(elements)
+
+    # Сброс указателя потока обратно в начало
+    buffer.seek(0)
+
+    # Создание FileResponse
+    response = FileResponse(buffer, as_attachment=True, filename='output.pdf')
+
+    return response
+
+
+def ticketRender(request, pk):
+    pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
+    ticket = Ticket.objects.get(id=pk)
+
+    # Настройка PDF
+    pdf_filename = "output.pdf"
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    # Определение стилей
+    styles = getSampleStyleSheet()
+    styleH = styles["Heading1"]
+
+    # Форматирование данных в виде списка списков для таблицы
+    table_data = [['Number', 'Passenger', 'Date of sell']]  # заголовки таблицы
+    table_data.append([ticket.id, ticket.passenger, ticket.date_of_sell])  # добавление данных из модели
+
+
+    # Создание таблицы с данными
+    table = Table(table_data, repeatRows=1)
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.white),
+                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('FONTNAME', (0, 0), (-1, -1), 'Arial'),
+                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                               ('BACKGROUND', (0, 1), (-1, -1), colors.white),
                                ]))
 
     # Добавление таблицы в элементы PDF

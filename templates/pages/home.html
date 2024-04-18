@@ -1,8 +1,36 @@
 {% extends 'index.html' %}
 
 {% block content %}
+    <form action="" method="get">
+        <div>
+            <h3>Статус комфорта</h3>
+            <div>
+                <input id="comfort1" name="comfort" type="checkbox" value="1">
+                <label for="comfort1">стандартно</label>
+            </div>
+            <div>
+                <input id="comfort2" name="comfort" type="checkbox" value="2">
+                <label for="comfort2">стандартно</label>
+            </div>
+        </div>
+        <div>
+            <h3>Наличие туалета</h3>
+            <div>
+                <input id="toilet" name="toilet" type="checkbox">
+                <label for="toilet">Есть</label>
+            </div>
+        </div>
+        <div>
+            <h3>Кондиционер</h3>
+            <div>
+                <input id="aircool" name="aircool" type="checkbox">
+                <label for="aircool">Есть</label>
+            </div>
+        </div>
+     <button>Отфильтровать</button>
+    </form>
     {% for route in routes %}
-        <div style="border: 1px solid gray">
+        <div class="route-item">
             <h4>Рейс №{{ route.number }}</h4>
             <p>
                 {% for station in route.stations.all %}
@@ -12,9 +40,6 @@
             </p>
             {% if user.is_authenticated %}
                 <a href="/info/buy/{{ route.number }}">Купить билет</a>
-
-{#            {% else %}#}
-{#                <a href="/info/buy/{{ route.number }}/no_login">Купить билет</a>#}
             {% endif %}
         </div>
     {% endfor %}

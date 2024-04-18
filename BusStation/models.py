@@ -32,6 +32,7 @@ class BusRoute(models.Model):
     size_place = models.CharField(verbose_name='Размер пространства для ног', max_length=100, default='стандартно')
     toilet = models.BooleanField(verbose_name="Наличие туалета", default=False)
     desc = models.TextField(verbose_name='Описание маршрута', null=True, blank=True)
+    cost = models.IntegerField(verbose_name='Цена одного билета', default=1000)
 
     def __str__(self):
         return str(self.number)
@@ -47,6 +48,7 @@ class Passenger(models.Model):
     passengerFIO = models.CharField(max_length=100, verbose_name="ФИО", default='')
     passport = models.CharField(max_length=11, verbose_name="Данные паспорта")
     person = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    balance = models.IntegerField('Баланс счёта', default=0)
 
     def __str__(self):
         return self.person.username

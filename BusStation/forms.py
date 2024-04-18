@@ -7,8 +7,12 @@ class changeInfoForm(forms.ModelForm):
     class Meta:
         model = Passenger
         fields = '__all__'
-        exclude = ['person']
+        exclude = ['person', 'balance']
 
+class topUpBalance(forms.ModelForm):
+    class Meta:
+        model = Passenger
+        fields = ['balance']
 
 class currTicketForm(forms.ModelForm):
     #
@@ -20,7 +24,7 @@ class currTicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = '__all__'
-        exclude = ['passenger', 'date_of_sell']
+        exclude = ['passenger', 'date_of_sell', 'cost']
         # exclude = [ 'date_of_sell']
     pass
 
