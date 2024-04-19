@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <h3>Рейс №{{ route.number }}</h3>
+    <p>Цена:{{ route.cost }}</p>
+    <p>Станция отправления: {{ route.depart_station }}</p>
+    <p>Станция прибытия: {{ route.arr_station }}</p>
+    <p>Остановки рейса:</p>
+    <ul>
+        {% for station in route.stations.all %}
+            <li>{{ station.name }}</li>
+        {% endfor %}
+    </ul>
+    <p>Класс комфорта: <a href="/info/comfort/{{ route.comfort.id }}">{{ route.comfort }}</a></p>
+    <p>Туалет:
+        {% if route.toilet %}
+            есть
+        {% else %}
+            отсутствует
+        {% endif %}
+    </p>
+    <p>Кондиционер:
+        {% if route.aircool %}
+            есть
+        {% else %}
+            отсутствует
+        {% endif %}
+    </p>
+    <p>Описание: {{ route.desc }}</p>
+    <p>
+        <a href="/info/buy/{{ route.number }}" class="btn btn-outline-success">Купить билет</a>
+    </p>
+{% endblock %}

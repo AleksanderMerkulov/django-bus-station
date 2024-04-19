@@ -225,3 +225,15 @@ def ticketRender(request, pk):
     response = FileResponse(buffer, as_attachment=True, filename='output.pdf')
 
     return response
+
+
+def entry_bus_route(request, pk):
+    bus_route_entry = BusRoute.objects.get(number=pk)
+
+    return render(request, 'pages/entry.html', {'route': bus_route_entry})
+
+
+def entry_comfort(request, pk):
+    comfort_entry = Comfort.objects.get(id=pk)
+
+    return render(request, 'pages/comfort_entry.html', {'comfort': comfort_entry})

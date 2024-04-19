@@ -79,6 +79,9 @@
             {% if user.is_authenticated %}
                 <a href="/info/buy/{{ route.number }}">Купить билет</a>
             {% endif %}
+            <p>
+                <a href="/info/route/{{ route.number }}">Подробнее о рейсе</a>
+            </p>
         </div>
     {% endfor %}
 
