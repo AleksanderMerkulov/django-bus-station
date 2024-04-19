@@ -5,6 +5,7 @@ from .models import *
 admin.site.register(Ticket)
 admin.site.register(TicketNoLogin)
 admin.site.register(Passenger)
+admin.site.register(Comfort)
 admin.site.register(Station)
 admin.site.register(BusRoute)
 admin.site.register(StationOfArrived)

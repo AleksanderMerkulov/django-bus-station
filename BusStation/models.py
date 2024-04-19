@@ -18,6 +18,17 @@ class Station(models.Model):
     pass
 
 
+class Comfort(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название', default='')
+    desc = models.TextField(verbose_name='Описание', default='')
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = "Класс комфорта"
+        verbose_name_plural = "Класс комфорта"
+
+
 # автобусный рейс - Ries
 class BusRoute(models.Model):
     number = models.IntegerField(verbose_name="Номер рейса")
@@ -33,6 +44,7 @@ class BusRoute(models.Model):
     toilet = models.BooleanField(verbose_name="Наличие туалета", default=False)
     desc = models.TextField(verbose_name='Описание маршрута', null=True, blank=True)
     cost = models.IntegerField(verbose_name='Цена одного билета', default=1000)
+    comfort = models.ForeignKey(Comfort, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return str(self.number)

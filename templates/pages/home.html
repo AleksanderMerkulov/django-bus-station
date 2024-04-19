@@ -3,31 +3,69 @@
 {% block content %}
     <form action="" method="get">
         <div>
+            <h3>Город отправления</h3>
+            <div>
+                {% for station in stations %}
+                    <div>
+                        <input id="depart{{ station.id }}" name="depart" type="checkbox" value="{{ station.id }}"
+                                {% for dep in depart %}
+                                    {% if station.id == dep %}
+                               checked
+                                    {% endif %}
+                                {% endfor %}>
+                        <label for="depart{{ station.id }}">{{ station.name }}</label>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div>
+            <h3>Город прибытия</h3>
+            <div>
+                {% for station in stations %}
+                    <div>
+                        <input id="arrived{{ station.id }}" name="arrived" type="checkbox" value="{{ station.id }}"
+                                {% for arr in arrived %}
+                                    {% if station.id == arr %}
+                               checked
+                                    {% endif %}
+                                {% endfor %}>
+                        <label for="arrived{{ station.id }}">{{ station.name }}</label>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div>
             <h3>Статус комфорта</h3>
-            <div>
-                <input id="comfort1" name="comfort" type="checkbox" value="1">
-                <label for="comfort1">стандартно</label>
-            </div>
-            <div>
-                <input id="comfort2" name="comfort" type="checkbox" value="2">
-                <label for="comfort2">стандартно</label>
-            </div>
+            {% for comfort in comforts %}
+                    <div>
+                        <input id="comfort{{ comfort.id }}" name="comfort" type="checkbox" value="{{ comfort.id }}"
+                                {% for arr in comform %}
+                                    {% if comfort.id == arr %}
+                               checked
+                                    {% endif %}
+                                {% endfor %}
+                        >
+                        <label for="comfort{{ comfort.id }}">{{ comfort.name }}</label>
+                    </div>
+                {% endfor %}
         </div>
         <div>
             <h3>Наличие туалета</h3>
             <div>
-                <input id="toilet" name="toilet" type="checkbox">
+                <input id="toilet" name="toilet" type="checkbox" value="True">
                 <label for="toilet">Есть</label>
             </div>
         </div>
         <div>
             <h3>Кондиционер</h3>
             <div>
-                <input id="aircool" name="aircool" type="checkbox">
+                <input id="aircool" name="aircool" type="checkbox" value="True">
                 <label for="aircool">Есть</label>
             </div>
         </div>
-     <button>Отфильтровать</button>
+     <button class="btn btn-outline-success">Отфильтровать</button>
     </form>
     {% for route in routes %}
         <div class="route-item">
