@@ -1,6 +1,15 @@
 {% extends 'index.html' %}
 
 {% block content %}
+    <style>
+        form{
+            display: none;
+        }
+        form.active{
+            display: block;
+        }
+    </style>
+    <button class="btn btn-dark" id="filter-btn">Фильтры</button>
     <form action="" method="get">
         <div>
             <h3>Город отправления</h3>
@@ -85,4 +94,19 @@
         </div>
     {% endfor %}
 
+    <script>
+     let button = document.querySelector('#filter-btn')
+     let form = document.querySelector('form')
+
+     button.addEventListener('click', ()=>{
+         if(form.classList.contains('active'))
+         {
+             form.classList.remove('active')
+         }
+         else
+         {
+             form.classList.add('active')
+         }
+     })
+    </script>
 {% endblock %}
