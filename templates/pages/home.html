@@ -81,7 +81,8 @@
             <h4>Рейс №{{ route.number }}</h4>
             <p>
                 {% for station in route.stations.all %}
-                    {{ station }},
+                    {{ station }}
+                    {% if not forloop.last %},{% endif %}
                 {% endfor %}
 {#                {{ stations }}#}
             </p>
